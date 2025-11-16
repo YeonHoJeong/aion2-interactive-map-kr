@@ -37,13 +37,22 @@ const App: React.FC = () => {
   useEffect(() => {
     if (!selectedMapId || types.length === 0) return;
 
+    const all = new Set<string>();
+    types.forEach((cat) => {
+      cat.subtypes.forEach((sub) => {
+        all.add(`${cat.id}::${sub.id}`);
+      });
+    });
+    setAllSubtypes(all);
+
     const storageKey = `${VISIBLE_STORAGE_PREFIX}${selectedMapId}`;
     const stored = typeof window !== "undefined"
       ? window.localStorage.getItem(storageKey)
       : null;
 
-    if (stored) {
+    if (stored != null) {
       try {
+        console.log("Load visibleSubtypes", stored);
         const parsed = JSON.parse(stored) as string[];
         const set = new Set<string>();
 
@@ -59,39 +68,27 @@ const App: React.FC = () => {
           if (validKeys.has(key)) set.add(key);
         });
 
-        // If after filtering we still have something, use it
-        if (set.size > 0) {
-          setVisibleSubtypes(set);
-          return;
-        }
-        // Fall through to "select all" if nothing valid
+        setVisibleSubtypes(set);
+        return;
       } catch (e) {
         console.warn("Failed to parse visibleSubtypes from localStorage", e);
         // Fall through to "select all"
       }
     }
-
     // Default: all visible for this map
-    const all = new Set<string>();
-    types.forEach((cat) => {
-      cat.subtypes.forEach((sub) => {
-        all.add(`${cat.id}::${sub.id}`);
-      });
-    });
     setVisibleSubtypes(all);
+
   }, [selectedMapId, types]);
 
   useEffect(() => {
     if (!selectedMapId) return;
-    // Avoid saving an empty Set before we’ve initialized it
-    // (optional, but avoids writing transient empty states)
-    if (visibleSubtypes.size === 0) return;
-
     const storageKey = `${VISIBLE_STORAGE_PREFIX}${selectedMapId}`;
     try {
       const arr = Array.from(visibleSubtypes);
+      const stored = JSON.stringify(arr);
+      console.log("Save visibleSubtypes", stored);
       if (typeof window !== "undefined") {
-        window.localStorage.setItem(storageKey, JSON.stringify(arr));
+        window.localStorage.setItem(storageKey, stored);
       }
     } catch (e) {
       console.warn("Failed to save visibleSubtypes to localStorage", e);
