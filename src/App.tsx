@@ -20,6 +20,7 @@ const App: React.FC = () => {
   const [visibleSubtypes, setVisibleSubtypes] = useState<Set<string>>(
     () => new Set(),
   );
+  const [allSubtypes, setAllSubtypes] = useState<Set<string>>(new Set());
 
   const [showLabels, setShowLabels] = useState<boolean>(true);
 
@@ -33,7 +34,6 @@ const App: React.FC = () => {
   // Initialize visibleSubtypes once when types are loaded
   useEffect(() => {
     if (types.length === 0) return;
-    if (visibleSubtypes.size > 0) return;
 
     const all = new Set<string>();
     types.forEach((cat) => {
@@ -41,8 +41,12 @@ const App: React.FC = () => {
         all.add(`${cat.id}::${sub.id}`);
       });
     });
-    setVisibleSubtypes(all);
-  }, [types, visibleSubtypes.size]); // using size so we don't depend on the Set identity
+
+    setAllSubtypes(all);
+
+    // only auto-enable all when we first load types AND nothing is set yet
+    setVisibleSubtypes((prev) => (prev.size === 0 ? all : prev));
+  }, [types]);
 
   const { markers, loading: loadingMarkers, subtypeCounts } =
     useMarkers(selectedMapId);
@@ -68,12 +72,21 @@ const App: React.FC = () => {
 
   const handleToggleSubtype = (categoryId: string, subtypeId: string) => {
     const key = `${categoryId}::${subtypeId}`;
+    console.log(key);
     setVisibleSubtypes((prev) => {
       const next = new Set(prev);
       if (next.has(key)) next.delete(key);
       else next.add(key);
       return next;
     });
+  };
+
+  const handleShowAllSubtypes = () => {
+    setVisibleSubtypes(allSubtypes);
+  };
+
+  const handleHideAllSubtypes = () => {
+    setVisibleSubtypes(new Set<string>());
   };
 
   if (loadingGameData && !selectedMap) {
@@ -100,6 +113,8 @@ const App: React.FC = () => {
           onToggleSubtype={handleToggleSubtype}
           showLabels={showLabels}
           onToggleShowLabels={setShowLabels}
+          onShowAllSubtypes={handleShowAllSubtypes}
+          onHideAllSubtypes={handleHideAllSubtypes}
         />
 
         <GameMapView

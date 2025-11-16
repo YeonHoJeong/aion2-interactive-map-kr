@@ -1,10 +1,10 @@
 // src/components/MapSidebar.tsx
-import React, { useState } from "react";
-import { Card, Button, Spinner, Switch } from "@heroui/react";
-import { useTranslation } from "react-i18next";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, {useState} from "react";
+import {Card, Button, Spinner, Switch} from "@heroui/react";
+import {useTranslation} from "react-i18next";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import * as SolidIcons from "@fortawesome/free-solid-svg-icons";
-import type { IconDefinition } from "@fortawesome/free-solid-svg-icons";
+import type {IconDefinition} from "@fortawesome/free-solid-svg-icons";
 
 import type {
   GameMapMeta,
@@ -23,6 +23,9 @@ type Props = {
 
   showLabels: boolean;
   onToggleShowLabels: (value: boolean) => void;
+
+  onShowAllSubtypes: () => void;
+  onHideAllSubtypes: () => void;
 };
 
 const MapSidebar: React.FC<Props> = ({
@@ -36,8 +39,10 @@ const MapSidebar: React.FC<Props> = ({
                                        onToggleSubtype,
                                        showLabels,
                                        onToggleShowLabels,
+                                       onShowAllSubtypes,
+                                       onHideAllSubtypes,
                                      }) => {
-  const { t } = useTranslation();
+  const {t} = useTranslation();
 
   const [collapsedCategories, setCollapsedCategories] = useState<
     Set<string>
@@ -80,11 +85,28 @@ const MapSidebar: React.FC<Props> = ({
           <h2 className="text-sm font-semibold">
             {t("common:menu.markerTypes", "Marker Types")}
           </h2>
+
+          <div className="flex items-center gap-2">
+            <Button
+              size="sm"
+              variant="light"
+              onPress={onShowAllSubtypes}
+            >
+              {t("common:menu.showAllMarkers", "Show all")}
+            </Button>
+            <Button
+              size="sm"
+              variant="light"
+              onPress={onHideAllSubtypes}
+            >
+              {t("common:menu.hideAllMarkers", "Hide all")}
+            </Button>
+          </div>
         </div>
 
         {loadingMarkers && (
           <div className="flex items-center gap-2 text-xs text-default-500">
-            <Spinner size="sm" /> <span>Loading markers...</span>
+            <Spinner size="sm"/> <span>Loading markers...</span>
           </div>
         )}
 
