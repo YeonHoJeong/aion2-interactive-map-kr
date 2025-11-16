@@ -55,6 +55,7 @@ export interface MarkerInstance {
   subtypeId: string;
   /** [x, y] in map coordinates. */
   position: [number, number];
+  images: string[];
 }
 
 /**

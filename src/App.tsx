@@ -13,6 +13,8 @@ import { useMarkers } from "./hooks/useMarkers";
 import type { GameMapMeta, MapRef } from "./types/game";
 
 const App: React.FC = () => {
+  const VISIBLE_STORAGE_PREFIX = "aion2.visibleSubtypes.v1.";
+
   const { maps, types, loading: loadingGameData } = useGameData();
   const [selectedMapId, setSelectedMapId] = useState<string | null>(null);
 
@@ -33,20 +35,68 @@ const App: React.FC = () => {
 
   // Initialize visibleSubtypes once when types are loaded
   useEffect(() => {
-    if (types.length === 0) return;
+    if (!selectedMapId || types.length === 0) return;
 
+    const storageKey = `${VISIBLE_STORAGE_PREFIX}${selectedMapId}`;
+    const stored = typeof window !== "undefined"
+      ? window.localStorage.getItem(storageKey)
+      : null;
+
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored) as string[];
+        const set = new Set<string>();
+
+        // Only keep keys that still exist in current types
+        const validKeys = new Set<string>();
+        types.forEach((cat) => {
+          cat.subtypes.forEach((sub) => {
+            validKeys.add(`${cat.id}::${sub.id}`);
+          });
+        });
+
+        parsed.forEach((key) => {
+          if (validKeys.has(key)) set.add(key);
+        });
+
+        // If after filtering we still have something, use it
+        if (set.size > 0) {
+          setVisibleSubtypes(set);
+          return;
+        }
+        // Fall through to "select all" if nothing valid
+      } catch (e) {
+        console.warn("Failed to parse visibleSubtypes from localStorage", e);
+        // Fall through to "select all"
+      }
+    }
+
+    // Default: all visible for this map
     const all = new Set<string>();
     types.forEach((cat) => {
       cat.subtypes.forEach((sub) => {
         all.add(`${cat.id}::${sub.id}`);
       });
     });
+    setVisibleSubtypes(all);
+  }, [selectedMapId, types]);
 
-    setAllSubtypes(all);
+  useEffect(() => {
+    if (!selectedMapId) return;
+    // Avoid saving an empty Set before we’ve initialized it
+    // (optional, but avoids writing transient empty states)
+    if (visibleSubtypes.size === 0) return;
 
-    // only auto-enable all when we first load types AND nothing is set yet
-    setVisibleSubtypes((prev) => (prev.size === 0 ? all : prev));
-  }, [types]);
+    const storageKey = `${VISIBLE_STORAGE_PREFIX}${selectedMapId}`;
+    try {
+      const arr = Array.from(visibleSubtypes);
+      if (typeof window !== "undefined") {
+        window.localStorage.setItem(storageKey, JSON.stringify(arr));
+      }
+    } catch (e) {
+      console.warn("Failed to save visibleSubtypes to localStorage", e);
+    }
+  }, [selectedMapId, visibleSubtypes]);
 
   const {
     markers,

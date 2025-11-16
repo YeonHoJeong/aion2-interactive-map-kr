@@ -57,11 +57,14 @@ export function flattenMarkers(raw: RawMarkersFile): MarkerInstance[] {
           continue;
         }
 
+        const images = (markerData as any).images as string[] || [];
+
         result.push({
           id: markerId,
           categoryId,
           subtypeId,
           position, // [x, y]
+          images,
         });
       }
     }

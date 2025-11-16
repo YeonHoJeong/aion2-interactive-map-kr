@@ -194,13 +194,14 @@ const GameMarker: React.FC<Props> = ({
         </Tooltip>
       )}
 
-      <Popup maxWidth={360} minWidth={260}>
+      <Popup maxWidth={360} minWidth={360} autoPan={true} closeButton={false}>
         <MarkerPopupContent
           name={localizedName}
           categoryLabel={categoryLabel}
           subtypeLabel={subtypeLabel}
           x={x}
           y={y}
+          images={marker.images}
           description={description}
           canComplete={canComplete}
           completed={isCompleted}
