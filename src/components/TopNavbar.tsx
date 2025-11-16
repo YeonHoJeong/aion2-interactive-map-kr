@@ -1,22 +1,27 @@
 // src/components/TopNavbar.tsx
 import React from "react";
-import { Navbar, NavbarBrand, NavbarContent } from "@heroui/react";
+import {
+  Navbar,
+  NavbarBrand,
+  NavbarContent,
+} from "@heroui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGlobe, faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
+import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
 import { useTranslation } from "react-i18next";
 
-import LanguageSwitcher from "./LanguageSwitcher";
 import { useTheme } from "../hooks/useTheme";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 const TopNavbar: React.FC = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(); // we use fully-qualified keys like common:siteTitle
   const { theme, toggleTheme } = useTheme();
-
   const isDark = theme === "dark";
 
   return (
-    <Navbar maxWidth="full" className="border-b border-default-200">
-
+    <Navbar
+      maxWidth="full"
+      className="border-b border-default-200 px-4"
+    >
       {/* LEFT: Logo + Title */}
       <NavbarBrand className="flex items-center gap-2 select-none cursor-default">
         <img
@@ -29,21 +34,17 @@ const TopNavbar: React.FC = () => {
         </span>
       </NavbarBrand>
 
-      {/* RIGHT: Language switcher + theme switch */}
-      <NavbarContent justify="end" className="flex items-center gap-4">
-
-        {/* Language Switcher Icon */}
-        <LanguageSwitcher>
-          <button
-            className="text-default-600 hover:text-default-900 transition-colors"
-            aria-label="Change Language"
-          >
-            <FontAwesomeIcon icon={faGlobe} className="text-lg" />
-          </button>
-        </LanguageSwitcher>
+      {/* RIGHT: Language switcher + theme toggle */}
+      <NavbarContent
+        justify="end"
+        className="flex items-center gap-4"
+      >
+        {/* Language switcher (owns its own button & dropdown) */}
+        <LanguageSwitcher />
 
         {/* Theme toggle */}
         <button
+          type="button"
           onClick={toggleTheme}
           aria-label="Toggle theme"
           className="text-default-600 hover:text-default-900 transition-colors"
@@ -53,7 +54,6 @@ const TopNavbar: React.FC = () => {
             className="text-lg"
           />
         </button>
-
       </NavbarContent>
     </Navbar>
   );

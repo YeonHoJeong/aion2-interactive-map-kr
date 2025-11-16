@@ -23,15 +23,7 @@ export function useGameData() {
         ]);
 
         if (cancelled) return;
-
-        const sortedMaps = [...mapsData.maps].sort((a, b) => {
-          const ao = a.order ?? 9999;
-          const bo = b.order ?? 9999;
-          if (ao !== bo) return ao - bo;
-          return a.id.localeCompare(b.id);
-        });
-
-        setMaps(sortedMaps);
+        setMaps(mapsData.maps);
         setTypes(typesData.categories);
       } catch (e) {
         console.error(e);

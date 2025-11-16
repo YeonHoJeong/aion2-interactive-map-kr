@@ -44,8 +44,8 @@ export interface MarkerTypeCategory {
 /**
  * A concrete marker instance on a map.
  *
- * IMPORTANT: position is [x, y] everywhere in our app.
- * When passing to Leaflet, we convert to [y, x].
+ * IMPORTANT: position is [x, y] in our app.
+ * When passing to Leaflet (CRS.Simple), we convert to [y, x].
  */
 export interface MarkerInstance {
   id: string;
@@ -55,5 +55,53 @@ export interface MarkerInstance {
   position: [number, number];
 }
 
-/** Reference to the Leaflet map instance. */
-export type MapRef = L.Map;
+/**
+ * Reference to the Leaflet map instance.
+ * Allow null so useRef<Map | null>(null) matches React.RefObject<MapRef>.
+ */
+export type MapRef = L.Map | null;
+
+/**
+ * Parsed maps.yaml
+ *
+ * Expected structure:
+ * version: 1
+ * maps:
+ *   - id: "world"
+ *     imageUrl: "/maps/world.webp"
+ *     width: 2275
+ *     height: 1285
+ */
+export interface MapsFile {
+  version: number;
+  maps: GameMapMeta[];
+}
+
+/**
+ * Parsed types.yaml
+ *
+ * Expected structure:
+ * version: 1
+ * categories:
+ *   - id: "locations"
+ *     icon: "faMapPin"
+ *     subtypes: [...]
+ */
+export interface TypesFile {
+  version: number;
+  categories: MarkerTypeCategory[];
+}
+
+/**
+ * Parsed markers YAML (e.g. data/markers/world.yaml).
+ *
+ * We only care that we can iterate:
+ *   categoryId -> subtypeId -> markerId -> { position: [x, y], ... }
+ *
+ * So we keep it intentionally loose apart from the 'version' field.
+ */
+export interface RawMarkersFile {
+  version: number;
+  // categories, gatheringPoints, questPoints, enemies, etc.
+  [categoryId: string]: any;
+}
