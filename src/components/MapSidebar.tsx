@@ -15,6 +15,7 @@ import {useTranslation} from "react-i18next";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronLeft, faChevronRight} from "@fortawesome/free-solid-svg-icons";
 
+import LanguageSwitcher from "./LanguageSwitcher";
 import type {GameMapMeta, MarkerTypeCategory, RegionInstance} from "../types/game";
 import {parseIconUrl} from "../utils/url.ts";
 
@@ -318,6 +319,20 @@ const MapSidebar: React.FC<Props> = ({
                 </div>
               </AccordionItem>
             ) : null}
+
+            {/* Settings */}
+            <AccordionItem
+              key="settings"
+              aria-label="Settings"
+              title={t("common:menu.settings")}
+            >
+              <div className="flex flex-col gap-2 p-1.5">
+                <div className="flex items-center justify-between px-2 py-1 rounded border border-default-200 bg-content2/60">
+                  <span className="text-xs font-semibold">{t("common:language.label")}</span>
+                  <LanguageSwitcher />
+                </div>
+              </div>
+            </AccordionItem>
 
           </Accordion>
           <Modal
