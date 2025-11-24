@@ -8,12 +8,13 @@ import {getBackendLoadPath} from "./hooks/useDataMode.tsx";
 
 // ---- Language config --------------------------------------
 
-export type LanguageCode = "en" | "zh-CN" | "zh-TW";
+export type LanguageCode = "en" | "zh-CN" | "zh-TW" | "kr";
 
 export const SUPPORTED_LANGUAGES: LanguageCode[] = [
   "en",
   "zh-CN",
   "zh-TW",
+  "kr",
 ];
 
 // ---- i18n initialization -----------------------------------
