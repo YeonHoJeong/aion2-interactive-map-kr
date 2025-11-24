@@ -1,13 +1,13 @@
-lang: "en"
+lang: "kr"
 siteTitle: "AION2 Interactive Map"
 announcement: "200 monolith positions for in Abyss updated, screenshots will be added later."
 
 language:
-  label: "Language"
+  label: "언어"
   en: "English"
   zh-CN: "Simplified Chinese"
   zh-TW: "Traditional Chinese"
-  kr: "Korean"
+  kr: "한국어"
 
 ui:
   confirm: "Confirm"
@@ -61,7 +61,7 @@ introModal:
 
     ### If the map fails to load
 
-    It may be due to high server load.  
+    It may be due to high server load.
     You may switch the top-right **online mode (cloud icon)** to **offline mode**, though offline data updates may be slightly delayed.
 
     ### Team Members
@@ -74,5 +74,3 @@ introModal:
 
   hint: |-
     Maintaining a game guide website requires a tremendous amount of time and effort. If you wish to support us, you may do so via the Alipay QR code below — your kindness is what keeps this project moving forward ❤
-
-  

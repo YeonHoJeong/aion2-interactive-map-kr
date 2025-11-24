@@ -6,6 +6,7 @@ language:
   en: "English"
   zh-CN: "簡體中文"
   zh-TW: "繁體中文"
+  kr: "韓語"
 
 ui:
   confirm: "確認"
